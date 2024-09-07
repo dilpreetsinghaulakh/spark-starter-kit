@@ -33,7 +33,7 @@ export default function LoginFrom({
   };
 
   return (
-    <div className="flex flex-col gap-4 h-screen w-full justify-center">
+    <div className="flex flex-col gap-4 h-[calc(100vh-12rem)] w-full justify-center">
       <h1 className="text-5xl font-bold mb-8">Login</h1>
       <label htmlFor="email">Email</label>
       <input
