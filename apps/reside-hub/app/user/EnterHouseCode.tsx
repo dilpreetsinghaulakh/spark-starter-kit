@@ -84,7 +84,7 @@ export default function EnterHouseCode({ tenant_id }: { tenant_id: string }) {
       await link(houseData[0].id, tenant_id);
     };
 
-    linkUserWithHouse(houseData[0].id, tenant_id);
+    linkUserWithHouse(houseData[0].id, tenant_id, rent);
 
     setTimeout(() => {
       window.location.reload();
@@ -99,7 +99,7 @@ export default function EnterHouseCode({ tenant_id }: { tenant_id: string }) {
             <div className="flex flex-col gap-4 bg-gray-100 text-black border border-gray-300 p-8 rounded-2xl">
               <p className="text-5xl font-bold">Payment Successful</p>
               <p className="text-2xl font-semibold">
-               For {houseData[0].house_name} of ${rent}
+                For {houseData[0].house_name} of ${rent}
               </p>
             </div>
           ) : (
