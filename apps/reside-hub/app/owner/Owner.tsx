@@ -7,6 +7,7 @@ import { ChevronDown, Edit, MapPin, X } from 'react-feather';
 import EditHouse from './EditHouse';
 import editHouseData from './editHouseData';
 import editNotification from './editNotification';
+import editPendingRent from './editPendingRent';
 
 function HouseCard({
   house,
@@ -19,21 +20,6 @@ function HouseCard({
   setEditHouseOverlay: any;
   editHouseOverlay: any;
 }) {
-  //   const [tenantData, setTenantData] = useState<any[]>([]);
-
-  //    function fetchUserData(id: string) {
-  //     console.log('fetching user data', id);
-  //     // let data =  fetchUserData(id);
-
-  //     // if (data !== undefined) {
-  //     //   setTenantData([...data]);
-  //     // }
-  //   }
-
-  //   useEffect(() => {
-  // fetchUserData(house.tenant_id);
-  //   }, []);
-
   const [notificationLength, setNotificationLength] = useState(0);
   const [input, setInput] = useState('');
   const [inputOpen, setInputOpen] = useState(false);
@@ -43,9 +29,6 @@ function HouseCard({
       setNotificationLength(house.notification.length);
     }
   }, [house]);
-  //    else {
-  //     setNotificationLength(0);
-  //   }
 
   const addNotification = async () => {
     async function addNotification() {
@@ -56,6 +39,48 @@ function HouseCard({
   };
 
   const [historyOpen, setHistoryOpen] = useState(false);
+
+  //   console.log(
+  //     'history',
+  //     house.history[house.history.length - 1].payment.toString().split('T')[0]
+  //   );
+  //   console.log('lease', house.lease_date.toString().split('T')[0].split('-')[2]);
+
+  //   console.log('today', new Date().toISOString().split('T')[0].split('-')[2]);
+
+  const todayDate = new Date().toISOString().split('T')[0].split('-')[2];
+  const todayMonth = new Date().toISOString().split('T')[0].split('-')[1];
+
+  const editPending = async (house_id: string, pending_rent: number) => {
+    async function edit(house_id: string, pending_rent: number) {
+      await editPendingRent(house_id, pending_rent);
+    }
+
+    await edit(house_id, pending_rent);
+  };
+
+  const historyDate = house.history[house.history.length - 1].payment
+    .toString()
+    .split('T')[0]
+    .split('-')[2];
+  const historyMonth = house.history[house.history.length - 1].payment
+    .toString()
+    .split('T')[0]
+    .split('-')[1];
+
+  const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
+
+  //   console.log('history', historyDate, historyMonth);
+  //   console.log('today', todayDate, todayMonth);
+  //   console.log('lease', leaseDate);
+
+  if (todayDate >= leaseDate && todayMonth != historyMonth) {
+    console.log('Rent is due', house.house_name);
+
+    if (house.pending_rent <= 0) {
+      editPending(house.id, house.rent_price);
+    }
+  }
 
   return (
     <div
@@ -80,9 +105,19 @@ function HouseCard({
       {house.tenant_id ? (
         <>
           <div className="flex gap-2 items-center">
-            <div className="w-2 h-2 mx-2 rounded-full bg-green-500"></div>
-            Property is occupied
+            {house.pending_rent > 0 ? (
+              <>
+                <div className="w-2 h-2 mx-2 rounded-full bg-red-500 animate-pulse"></div>
+                <p>Rent is due (${house.pending_rent})</p>
+              </>
+            ) : (
+              <>
+                <div className="w-2 h-2 mx-2 rounded-full bg-green-500"></div>
+                Property is occupied
+              </>
+            )}
           </div>
+
           {house.history ? (
             <div className="">
               <button
@@ -154,18 +189,6 @@ function HouseCard({
                   placeholder="Add a notification"
                   className="bg-gray-100 p-2 rounded-lg"
                 />
-                {/* <button
-                  onClick={() => {
-                    if (input) {
-                      house.notification.push(input);
-                      setNotificationLength(house.notification.length);
-                      setInput('');
-                    }
-                  }}
-                  className="bg-lime-300 text-black px-8 py-2 font-semibold rounded-lg"
-                >
-                  Add
-                </button> */}
               </div>
             ) : null}
 
