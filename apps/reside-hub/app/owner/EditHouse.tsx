@@ -5,6 +5,7 @@ import { FilePlus, Plus, X } from 'react-feather';
 import insertHouse from './insertHouse';
 import { supabase } from '../api/supabase';
 import editHouseData from './editHouseData';
+import deleteHouseData from './deleteHouseData';
 
 function AddEmergencyContact({
   emergencyContacts,
@@ -175,6 +176,16 @@ export default function EditHouse({
     setRent('');
   }
 
+  async function deleteHouseInDB(house_id: string) {
+    deleteHouseData(house_id);
+
+    setOverlay(false);
+    setEmergencyContacts([]);
+    setHouseName('');
+    setAddress('');
+    setRent('');
+  }
+
   return overlay ? (
     <div
       ref={overlayRef}
@@ -238,6 +249,12 @@ export default function EditHouse({
             className="mt-4 bg-black text-white px-8 py-2 font-semibold rounded-lg"
           >
             Done
+          </button>
+          <button
+            onClick={() => deleteHouseInDB(house_id)}
+            className="mt-2 bg-red-200 text-red-900 px-8 py-2 font-semibold rounded-lg"
+          >
+            Delete
           </button>
         </div>
       </div>
