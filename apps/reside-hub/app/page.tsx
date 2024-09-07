@@ -4,6 +4,7 @@ import { supabase } from './api/supabase';
 import LoginFrom from './components/Login';
 import fetchUserData from './api/fetchUserData';
 import Owner from './owner/Owner';
+import UserScreen from './user/User';
 
 export default function Index() {
   const [user, setUser] = useState('');
@@ -38,7 +39,7 @@ export default function Index() {
         isOwner ? (
           <Owner userId={user} />
         ) : (
-          <div>Not an owner</div>
+          <UserScreen userId={user} />
         )
       ) : (
         <LoginFrom setUserId={setUser} />
