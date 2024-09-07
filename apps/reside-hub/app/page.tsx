@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import { supabase } from './api/supabase';
 import LoginFrom from './components/Login';
 import fetchUserData from './api/fetchUserData';
+import Owner from './owner/Owner';
 
 export default function Index() {
   const [user, setUser] = useState('');
-  const [userName, setUserName] = useState('');
+  const [isOwner, setIsOwner] = useState('');
 
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +20,7 @@ export default function Index() {
         let data = await fetchUserData(id);
 
         if (data && data[0]) {
-          setUserName(data[0].name);
+          setIsOwner(data[0].is_owner);
         }
       }
 
@@ -34,7 +35,11 @@ export default function Index() {
   ) : (
     <div className="px-8">
       {user ? (
-        <div>Welcome, {userName}</div>
+        isOwner ? (
+          <Owner userId={user} />
+        ) : (
+          <div>Not an owner</div>
+        )
       ) : (
         <LoginFrom setUserId={setUser} />
       )}
