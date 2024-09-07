@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import fetchUserData from '../api/fetchUserData';
 import fetchHouseData from './fetchHouseData';
 import AddHouse from './AddHouse';
-import { Edit, MapPin, X } from 'react-feather';
+import { ChevronDown, Edit, MapPin, X } from 'react-feather';
 import EditHouse from './EditHouse';
 import editHouseData from './editHouseData';
 import editNotification from './editNotification';
@@ -55,6 +55,8 @@ function HouseCard({
     await addNotification();
   };
 
+  const [historyOpen, setHistoryOpen] = useState(false);
+
   return (
     <div
       className="flex flex-col relative gap-2 bg-gray-100 border border-gray-300 p-2 rounded-xl"
@@ -81,6 +83,37 @@ function HouseCard({
             <div className="w-2 h-2 mx-2 rounded-full bg-green-500"></div>
             Property is occupied
           </div>
+          {house.history ? (
+            <div className="">
+              <button
+                onClick={() => {
+                  setHistoryOpen(!historyOpen);
+                }}
+                className="flex gap-2 items-center"
+              >
+                <div className="p-1">
+                  <ChevronDown
+                    className={
+                      'w-4 h-auto ' + (historyOpen ? 'rotate-180' : '')
+                    }
+                  />
+                </div>
+                <p>Payment History</p>
+              </button>
+
+              <div className={historyOpen ? 'h-full' : 'h-0 overflow-hidden'}>
+                {house.history.map((history: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex gap-2 items-center justify-between "
+                  >
+                    <p>{history.payment}</p>
+                    <p>$ {history.rent}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           <div className="bg-white p-2 rounded-xl">
             {notificationLength ? (
@@ -88,6 +121,7 @@ function HouseCard({
                 <p className="text-sm font-semibold">
                   Notifications • {notificationLength}
                 </p>
+
                 {house.notification.map((notification: any, index: number) => (
                   <div
                     key={index}
