@@ -5,7 +5,6 @@ import fetchHouseData from './fetchHouseData';
 import AddHouse from './AddHouse';
 import { ChevronDown, Edit, MapPin, X } from 'react-feather';
 import EditHouse from './EditHouse';
-import editHouseData from './editHouseData';
 import editNotification from './editNotification';
 import editPendingRent from './editPendingRent';
 
@@ -40,14 +39,6 @@ function HouseCard({
 
   const [historyOpen, setHistoryOpen] = useState(false);
 
-  //   console.log(
-  //     'history',
-  //     house.history[house.history.length - 1].payment.toString().split('T')[0]
-  //   );
-  //   console.log('lease', house.lease_date.toString().split('T')[0].split('-')[2]);
-
-  //   console.log('today', new Date().toISOString().split('T')[0].split('-')[2]);
-
   const todayDate = new Date().toISOString().split('T')[0].split('-')[2];
   const todayMonth = new Date().toISOString().split('T')[0].split('-')[1];
 
@@ -70,13 +61,7 @@ function HouseCard({
 
   const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
 
-  //   console.log('history', historyDate, historyMonth);
-  //   console.log('today', todayDate, todayMonth);
-  //   console.log('lease', leaseDate);
-
   if (todayDate >= leaseDate && todayMonth != historyMonth) {
-    console.log('Rent is due', house.house_name);
-
     if (house.pending_rent <= 0) {
       editPending(house.id, house.rent_price);
     }
@@ -205,7 +190,7 @@ function HouseCard({
                 }
                 setInputOpen(!inputOpen);
               }}
-              className="bg-lime-300 w-full text-black px-8 py-2 font-semibold rounded-lg flex items-center justify-center gap-2"
+              className="bg-indigo-300 w-full text-black px-8 py-2 font-semibold rounded-lg flex items-center justify-center gap-2"
             >
               {inputOpen ? 'Done' : 'Add Notification'}
             </button>
@@ -257,9 +242,7 @@ export default function Owner({ userId }: { userId: string }) {
   }, []);
 
   useEffect(() => {
-    // setTimeout(() => {
     getHouseData(userId);
-    // }, 100);
   }, [addHouseOverlay, editHouseOverlay]);
 
   return loading ? (
@@ -284,27 +267,26 @@ export default function Owner({ userId }: { userId: string }) {
       <div className="flex flex-col gap-8">
         <h2 className="text-3xl">Your Houses</h2>
         {houseData.length ? (
-          //   <>
-          houseData.map((house, index) => (
-            <HouseCard
-              key={index}
-              house={house}
-              setEditHouseId={setEditHouseId}
-              setEditHouseOverlay={setEditHouseOverlay}
-              editHouseOverlay={editHouseOverlay}
-            />
-          ))
+          <>
+            {houseData.map((house, index) => (
+              <HouseCard
+                key={index}
+                house={house}
+                setEditHouseId={setEditHouseId}
+                setEditHouseOverlay={setEditHouseOverlay}
+                editHouseOverlay={editHouseOverlay}
+              />
+            ))}
+            <button
+              onClick={() => {
+                setAddHouseOverlay(!addHouseOverlay);
+              }}
+              className="bg-lime-300 text-black px-8 py-2 font-semibold rounded-lg mb-16"
+            >
+              Add a house
+            </button>
+          </>
         ) : (
-          //     <p>Have house</p>
-          //     <button
-          //       onClick={() => {
-          //         setAddHouseOverlay(!addHouseOverlay);
-          //       }}
-          //       className="bg-lime-300 text-black px-8 py-2 font-semibold rounded-lg"
-          //     >
-          //       Add a house
-          //     </button>
-          //   </>
           <div className="flex flex-col justify-center gap-8">
             <p className="text-center italic text-gray-600">
               You have not added any house.
