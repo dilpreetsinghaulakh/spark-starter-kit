@@ -3,8 +3,166 @@ import { useEffect, useState } from 'react';
 import fetchUserData from '../api/fetchUserData';
 import fetchHouseData from './fetchHouseData';
 import AddHouse from './AddHouse';
-import { Edit, MapPin } from 'react-feather';
+import { Edit, MapPin, X } from 'react-feather';
 import EditHouse from './EditHouse';
+import editHouseData from './editHouseData';
+import editNotification from './editNotification';
+
+function HouseCard({
+  house,
+  setEditHouseId,
+  setEditHouseOverlay,
+  editHouseOverlay,
+}: {
+  house: any;
+  setEditHouseId: any;
+  setEditHouseOverlay: any;
+  editHouseOverlay: any;
+}) {
+  //   const [tenantData, setTenantData] = useState<any[]>([]);
+
+  //    function fetchUserData(id: string) {
+  //     console.log('fetching user data', id);
+  //     // let data =  fetchUserData(id);
+
+  //     // if (data !== undefined) {
+  //     //   setTenantData([...data]);
+  //     // }
+  //   }
+
+  //   useEffect(() => {
+  // fetchUserData(house.tenant_id);
+  //   }, []);
+
+  const [notificationLength, setNotificationLength] = useState(0);
+  const [input, setInput] = useState('');
+  const [inputOpen, setInputOpen] = useState(false);
+
+  useEffect(() => {
+    if (house.notification) {
+      setNotificationLength(house.notification.length);
+    }
+  }, [house]);
+  //    else {
+  //     setNotificationLength(0);
+  //   }
+
+  const addNotification = async () => {
+    async function addNotification() {
+      await editNotification(house.id, house.notification);
+    }
+
+    await addNotification();
+  };
+
+  return (
+    <div
+      className="flex flex-col relative gap-2 bg-gray-100 border border-gray-300 p-2 rounded-xl"
+      key={house.id}
+    >
+      <button
+        onClick={() => {
+          setEditHouseId(house.id);
+          setEditHouseOverlay(!editHouseOverlay);
+        }}
+        className="absolute right-2"
+      >
+        <Edit />
+      </button>
+      <p className="font-bold italic text-3xl text-gray-500"># {house.id}</p>
+      <p className="text-lg font-semibold">{house.house_name}</p>
+      <p className="flex items-center gap-2 text-gray-600">
+        <MapPin /> {house.house_address}
+      </p>
+
+      {house.tenant_id ? (
+        <>
+          <div className="flex gap-2 items-center">
+            <div className="w-2 h-2 mx-2 rounded-full bg-green-500"></div>
+            Property is occupied
+          </div>
+
+          <div className="bg-white p-2 rounded-xl">
+            {notificationLength ? (
+              <>
+                <p className="text-sm font-semibold">
+                  Notifications • {notificationLength}
+                </p>
+                {house.notification.map((notification: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex gap-2 items-center justify-between bg-gay-200  rounded-lg"
+                  >
+                    <p>{notification}</p>
+                    <button
+                      onClick={() => {
+                        house.notification.splice(index, 1);
+                        setNotificationLength(house.notification.length);
+                        addNotification();
+                      }}
+                      className="text-red-500 py-2 font-semibold rounded-lg"
+                    >
+                      <X className="stroke-[3]" />
+                    </button>
+                  </div>
+                ))}
+              </>
+            ) : null}
+
+            {inputOpen ? (
+              <div className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                  }}
+                  placeholder="Add a notification"
+                  className="bg-gray-100 p-2 rounded-lg"
+                />
+                {/* <button
+                  onClick={() => {
+                    if (input) {
+                      house.notification.push(input);
+                      setNotificationLength(house.notification.length);
+                      setInput('');
+                    }
+                  }}
+                  className="bg-lime-300 text-black px-8 py-2 font-semibold rounded-lg"
+                >
+                  Add
+                </button> */}
+              </div>
+            ) : null}
+
+            <button
+              onClick={() => {
+                if (inputOpen) {
+                  if (input) {
+                    house.notification.push(input);
+
+                    setNotificationLength(house.notification.length);
+                    addNotification();
+                    setInput('');
+                  }
+                }
+                setInputOpen(!inputOpen);
+              }}
+              className="bg-lime-300 w-full text-black px-8 py-2 font-semibold rounded-lg flex items-center justify-center gap-2"
+            >
+              {inputOpen ? 'Done' : 'Add Notification'}
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="flex gap-2 items-center">
+          <div className="w-2 h-2 mx-2 rounded-full bg-amber-500"></div>
+          Vacant
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Owner({ userId }: { userId: string }) {
   //   const [overlay, setOverlay] = useState(false);
@@ -42,9 +200,9 @@ export default function Owner({ userId }: { userId: string }) {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      getHouseData(userId);
-    }, 100);
+    // setTimeout(() => {
+    getHouseData(userId);
+    // }, 100);
   }, [addHouseOverlay, editHouseOverlay]);
 
   return loading ? (
@@ -69,40 +227,27 @@ export default function Owner({ userId }: { userId: string }) {
       <div className="flex flex-col gap-8">
         <h2 className="text-3xl">Your Houses</h2>
         {houseData.length ? (
-          <>
-            {houseData.map((house) => (
-              <div
-                className="flex flex-col relative gap-2 bg-gray-100 border border-gray-300 p-2 rounded-xl"
-                key={house.id}
-              >
-                <button
-                  onClick={() => {
-                    setEditHouseId(house.id);
-                    setEditHouseOverlay(!editHouseOverlay);
-                  }}
-                  className="absolute right-2"
-                >
-                  <Edit />
-                </button>
-                <p className="font-bold italic text-3xl text-gray-500">
-                  # {house.id}
-                </p>
-                <p className="text-lg font-semibold">{house.house_name}</p>
-                <p className="flex items-center gap-2 text-gray-600">
-                  <MapPin /> {house.house_address}
-                </p>
-              </div>
-            ))}
-            <button
-              onClick={() => {
-                setAddHouseOverlay(!addHouseOverlay);
-              }}
-              className="bg-lime-300 text-black px-8 py-2 font-semibold rounded-lg"
-            >
-              Add a house
-            </button>
-          </>
+          //   <>
+          houseData.map((house, index) => (
+            <HouseCard
+              key={index}
+              house={house}
+              setEditHouseId={setEditHouseId}
+              setEditHouseOverlay={setEditHouseOverlay}
+              editHouseOverlay={editHouseOverlay}
+            />
+          ))
         ) : (
+          //     <p>Have house</p>
+          //     <button
+          //       onClick={() => {
+          //         setAddHouseOverlay(!addHouseOverlay);
+          //       }}
+          //       className="bg-lime-300 text-black px-8 py-2 font-semibold rounded-lg"
+          //     >
+          //       Add a house
+          //     </button>
+          //   </>
           <div className="flex flex-col justify-center gap-8">
             <p className="text-center italic text-gray-600">
               You have not added any house.
