@@ -7,6 +7,7 @@ import { ChevronDown, Edit, MapPin, X } from 'react-feather';
 import EditHouse from './EditHouse';
 import editNotification from './editNotification';
 import editPendingRent from './editPendingRent';
+import removeTenant from './removeTenant';
 
 function HouseCard({
   house,
@@ -50,22 +51,33 @@ function HouseCard({
     await edit(house_id, pending_rent);
   };
 
-  const historyDate = house.history[house.history.length - 1].payment
-    .toString()
-    .split('T')[0]
-    .split('-')[2];
-  const historyMonth = house.history[house.history.length - 1].payment
-    .toString()
-    .split('T')[0]
-    .split('-')[1];
+  if (house.history.length > 0) {
+    let historyDate;
+    let historyMonth;
+    historyDate = house.history[house.history.length - 1].payment
+      .toString()
+      .split('T')[0]
+      .split('-')[2];
+    historyMonth = house.history[house.history.length - 1].payment
+      .toString()
+      .split('T')[0]
+      .split('-')[1];
 
-  const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
+    const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
 
-  if (todayDate >= leaseDate && todayMonth != historyMonth) {
-    if (house.pending_rent <= 0) {
-      editPending(house.id, house.rent_price);
+    if (todayDate >= leaseDate && todayMonth != historyMonth) {
+      if (house.pending_rent <= 0) {
+        editPending(house.id, house.rent_price);
+      }
     }
   }
+  const removeTenantFromDB = async (house_id: string) => {
+    async function remove(house_id: string) {
+      await removeTenant(house_id);
+    }
+
+    await remove(house_id);
+  };
 
   return (
     <div
@@ -193,6 +205,17 @@ function HouseCard({
               className="bg-indigo-300 w-full text-black px-8 py-2 font-semibold rounded-lg flex items-center justify-center gap-2"
             >
               {inputOpen ? 'Done' : 'Add Notification'}
+            </button>
+
+            <button
+              className="bg-red-500 text-white px-8 w-full mt-2 py-2 font-semibold rounded-lg"
+              onClick={() => {
+                removeTenantFromDB(house.id);
+
+                window.location.reload();
+              }}
+            >
+              Remove Tenant
             </button>
           </div>
         </>
