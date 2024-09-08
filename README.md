@@ -5,6 +5,20 @@
 
 Live at https://residehub.vercel.app/
 
+## Develop locally
+
+1. Clone the repository.
+
+2. Install dependencies
+   ```
+   npm install
+    ```
+
+3. Run development server
+    ```
+    npx nx dev reside-hub
+    ```
+
 ## Features
 
 - **Tenant Management**: Add, remove, and manage tenants easily. Keep track of tenant information and manage tenant-related documents.
