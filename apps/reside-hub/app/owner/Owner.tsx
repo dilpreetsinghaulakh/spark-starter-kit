@@ -52,26 +52,28 @@ function HouseCard({
     await edit(house_id, pending_rent);
   };
 
-  if (house.history.length > 0) {
-    let historyDate;
-    let historyMonth;
-    historyDate = house.history[house.history.length - 1].payment
-      .toString()
-      .split('T')[0]
-      .split('-')[2];
-    historyMonth = house.history[house.history.length - 1].payment
-      .toString()
-      .split('T')[0]
-      .split('-')[1];
+  useEffect(() => {
+    if (house.history.length > 0) {
+      let historyDate;
+      let historyMonth;
+      historyDate = house.history[house.history.length - 1].payment
+        .toString()
+        .split('T')[0]
+        .split('-')[2];
+      historyMonth = house.history[house.history.length - 1].payment
+        .toString()
+        .split('T')[0]
+        .split('-')[1];
 
-    const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
+      const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
 
-    if (todayDate >= leaseDate && todayMonth != historyMonth) {
-      if (house.pending_rent <= 0) {
-        editPending(house.id, house.rent_price);
+      if (todayDate >= leaseDate && todayMonth != historyMonth) {
+        if (house.pending_rent <= 0) {
+          editPending(house.id, house.rent_price);
+        }
       }
     }
-  }
+  }, [house]);
   const removeTenantFromDB = async (house_id: string) => {
     async function remove(house_id: string) {
       await removeTenant(house_id);
