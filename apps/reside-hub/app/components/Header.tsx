@@ -10,6 +10,7 @@ export default function Header() {
   return (
     <div className="flex justify-between items-center px-8 py-4 mb-8">
       <Image src="/logo.png" alt="Logo" className="h-12 w-auto" width={364} height={153} />
+      <img src="/logo.png" alt="Logo" className="h-12 w-auto" />
       <div className="flex gap-4">
         <button
           onClick={handleLogout}
