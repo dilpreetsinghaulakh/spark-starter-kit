@@ -16,6 +16,7 @@ interface HouseData {
   pending_rent: number; // Add the 'pending_rent' property
   history: any[]; // Add the 'history' property
   lease_date: string; // Add the 'lease_date' property
+  contacts?: any[]; // Add the 'emergency_contacts' property
 }
 
 interface UserScreenProps {
@@ -190,6 +191,52 @@ export default function UserScreen({ userId }: UserScreenProps) {
               >
                 Pay Now
               </button>
+            </div>
+            <div className="flex flex-col gap-4">
+              <h2 className="text-4xl font-semibold  text-black ">History</h2>
+              <div className="bg-gray-100 border border-gray-300 p-4 rounded-2xl shadow-2xl">
+                {houseData[0].history.length ? (
+                  houseData[0].history.map((history, index: number) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center"
+                    >
+                      <p className="font-semibold">
+                        {history.payment.split('T')[0]}
+                      </p>
+                      <p className="font-semibold">
+                        {history.rent}
+                        <span className="text-xs font-bold"> USD</span>
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No payment history</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4 mb-16">
+              <h2 className="text-4xl font-semibold  text-black ">
+                Emergency Contacts
+              </h2>
+              <div className="bg-gray-100 border border-gray-300 p-4 rounded-2xl shadow-2xl">
+                {houseData[0].contacts ? (
+                  houseData[0].contacts.map(
+                    (contact, index: number) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center"
+                      >
+                        <p className="font-semibold">{contact.name}</p>
+                        <p className="font-semibold">{contact.phone}</p>
+                      </div>
+                    )
+                  )
+                ) : (
+                  <p>No emergency contacts</p>
+                )}
+              </div>
             </div>
           </div>
         )
