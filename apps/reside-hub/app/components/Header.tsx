@@ -1,4 +1,7 @@
 "use client";
+
+import Image from "next/image";
+
 export default function Header() {
   const handleLogout = () => {
     sessionStorage.removeItem('user_id');
@@ -6,7 +9,7 @@ export default function Header() {
   };
   return (
     <div className="flex justify-between items-center px-8 py-4 mb-8">
-      <p className="text-4xl">RH</p>
+      <Image src="/logo.png" alt="Logo" className="h-12 w-auto" width={364} height={153} />
       <div className="flex gap-4">
         <button
           onClick={handleLogout}
