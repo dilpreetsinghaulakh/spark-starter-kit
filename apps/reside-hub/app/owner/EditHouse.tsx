@@ -248,13 +248,13 @@ export default function EditHouse({
             onClick={editHouseInDB}
             className="mt-4 bg-black text-white px-8 py-2 font-semibold rounded-lg"
           >
-            Done
+            Save Changes
           </button>
           <button
             onClick={() => deleteHouseInDB(house_id)}
             className="mt-2 bg-red-200 text-red-900 px-8 py-2 font-semibold rounded-lg"
           >
-            Delete
+            Delete House
           </button>
         </div>
       </div>
