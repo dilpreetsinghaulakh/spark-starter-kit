@@ -23,6 +23,7 @@ function HouseCard({
   const [notificationLength, setNotificationLength] = useState(0);
   const [input, setInput] = useState('');
   const [inputOpen, setInputOpen] = useState(false);
+  const [dangerZoneOpen, setDangerZoneOpen] = useState(false);
 
   useEffect(() => {
     if (house.notification) {
@@ -51,26 +52,28 @@ function HouseCard({
     await edit(house_id, pending_rent);
   };
 
-  if (house.history.length > 0) {
-    let historyDate;
-    let historyMonth;
-    historyDate = house.history[house.history.length - 1].payment
-      .toString()
-      .split('T')[0]
-      .split('-')[2];
-    historyMonth = house.history[house.history.length - 1].payment
-      .toString()
-      .split('T')[0]
-      .split('-')[1];
+  useEffect(() => {
+    if (house.history.length > 0) {
+      let historyDate;
+      let historyMonth;
+      historyDate = house.history[house.history.length - 1].payment
+        .toString()
+        .split('T')[0]
+        .split('-')[2];
+      historyMonth = house.history[house.history.length - 1].payment
+        .toString()
+        .split('T')[0]
+        .split('-')[1];
 
-    const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
+      const leaseDate = house.lease_date.toString().split('T')[0].split('-')[2];
 
-    if (todayDate >= leaseDate && todayMonth != historyMonth) {
-      if (house.pending_rent <= 0) {
-        editPending(house.id, house.rent_price);
+      if (todayDate >= leaseDate && todayMonth != historyMonth) {
+        if (house.pending_rent <= 0) {
+          editPending(house.id, house.rent_price);
+        }
       }
     }
-  }
+  }, [house]);
   const removeTenantFromDB = async (house_id: string) => {
     async function remove(house_id: string) {
       await removeTenant(house_id);
@@ -206,18 +209,27 @@ function HouseCard({
             >
               {inputOpen ? 'Done' : 'Add Notification'}
             </button>
-
-            <button
-              className="bg-red-500 text-white px-8 w-full mt-2 py-2 font-semibold rounded-lg"
-              onClick={() => {
-                removeTenantFromDB(house.id);
-
-                window.location.reload();
-              }}
-            >
-              Remove Tenant
-            </button>
           </div>
+          <button
+            onClick={() => {
+              setDangerZoneOpen(!dangerZoneOpen);
+            }}
+          >
+            {dangerZoneOpen ? 'Close Danger Zone' : 'Open Danger Zone'}
+          </button>
+          <button
+            className={
+              'bg-red-500 text-white px-8 w-full mt-2  font-semibold rounded-lg overflow-hidden ' +
+              (dangerZoneOpen ? 'h-fit py-2' : 'h-0')
+            }
+            onClick={() => {
+              removeTenantFromDB(house.id);
+
+              window.location.reload();
+            }}
+          >
+            Remove Tenant
+          </button>
         </>
       ) : (
         <div className="flex gap-2 items-center">

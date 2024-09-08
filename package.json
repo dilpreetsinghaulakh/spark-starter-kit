@@ -2,7 +2,9 @@
   "name": "@spark-starter-kit/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "nx build reside-hub"
+  },
   "private": true,
   "devDependencies": {
     "@angular-devkit/build-angular": "~18.2.0",
@@ -14,6 +16,7 @@
     "@angular/cli": "~18.2.0",
     "@angular/compiler-cli": "~18.2.0",
     "@angular/language-service": "~18.2.0",
+    "@nrwl/next": "^19.6.5",
     "@nx/angular": "^19.6.2",
     "@nx/devkit": "19.6.2",
     "@nx/eslint": "19.6.2",
